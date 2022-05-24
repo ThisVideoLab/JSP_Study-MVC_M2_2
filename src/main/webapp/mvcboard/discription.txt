@@ -1,0 +1,68 @@
+
+
+	<Controller (서블릿) 매핑 설정>
+
+	1. web.xml에서 설정하는 방법
+	2. @ (어노테이션)을 이용해서 설정하는 방법
+
+	<첨부파일이 있는 게시판>
+	
+	-MVC 모델로 개발. 중~대규모 사이트에서 주로 개발함. 간단한건 MVC1 형태로 개발함.
+	1. database의 테이블 생성. (더미 데이터 입력)
+	2. DTO 객체 생성 : 전달자 역할을 하는 DTO.
+					어플리케이션 => DTO(데이터 전송 객체) => DAO(데이터 접근 객체) > DataBase 의 흐름을 보임
+	3. DAO 객체 생성 : DataBase에서 셀렉트, 인서트, 업데이트, 델리트를 하는 객체
+	4. Controller 매핑 설정 (1. web.xml 사용, 2. @ 어노테이션 사용)
+	5. Controller 객체 생성 (최근에는 서블릿을 사용해 컨트롤러를 생성함, doGet, doPost 메서드를 재정의해서 사용)
+						  클라이언트 요청 -> 모델(비지니스 로직 처리, DTO, DAO)을 통해서 정보를 처리 -> 뷰페이지를 통해 결과 출력
+	6. view 페이지 생성 (육안으로 보이는 껍데기)
+	
+	<DBCP(DataBase Connection Pool)>
+	
+	Connection 객체 생성시에 부하가 많이 걸린다. 보통 입력받은 데이터를 폼에 넣어서 액션 페이지에 넘기면 getParameter로 받아서 커낵션 객체를 만들고
+	이 커낵션 객체를 통해서 DB에 Data를 저장하게 됨. 그리고 이 커넥션 객체를 만들 때 많은 부하가 발생하게 됨. 우리가 보통 DB 커넥터로 많이 쓰던
+	db_connection_oracle.jsp 와 같은 커넥터 생성시에 많은 부하가 발생한다는 것. 실제로 db_connection_oracle.jsp을 돌려보면 단순히 DB에
+	접속하는 것에 불과한데도 작동 시간이 꽤나 걸린다는 것을 알 수 있음.
+	
+	고로, 톰캣이 실행될 때 미리 Connection 객체를 기본적으로 20개 가량 만들어두고 요청이 발생하면 이 커낵션 객체를 할당해 부하를 줄일 수 있음.
+	이는 중-대규모 사이트의 서버 부하 감소에 효과적임. 아마 소규모 사이트라면 배보다 배꼽이 더 클 수 있을듯. 
+	  
+	<DBCP 세팅 순서>
+	
+	  1. server.xml  설정 
+	  
+	  톰켓 설치폴더 \conf 내에 있는 server.xml의 <GlobalNamingResources> 섹션의 밑에 추가로 삽입할 것. 안의 내용을 지우지 말고
+	  그 아래에 추가해야한다는 점을 잊지 말 것. 그리고 아래 설명에서 한글 부분은 다 지우고 넣어줘야 함. 
+	  
+	  그리고 마지막으로 톰캣 서버를 이클립스에서 제거 후에 재등록해줘야지 아래 설정 내용들이 재대로 반영됨.
+	  
+  	  <GlobalNamingResources>
+  	  	      <Resource auth="Container" -- Resource 관리자를 지정. 여기서는 톰캣컨테이너가 관리자임
+              driverClassName="oracle.jdbc.OracleDriver"
+              type="javax.sql.DataSource" --Resource 의 형태 지정. 데이타소스 형태를 지정함. 여기서는 sql 타입으로 지정함
+              initialSize="0"
+              minIdle="5"  --  Connection pool 유지를 위해 최소 대기 connection 숫자
+              maxTotal="20" -- 연결 가능한 최대 커낵션 객체 수 
+              maxIdle="20" --  Connection pool 유지를 위해 최대 대기 connection 숫자
+              maxWaitMillis="5000" -- Connection 재 사용을 위해 대기해야 하는 최대 시간(단위:ms)
+              url="jdbc:oracle:thin:@localhost:1521:xe"
+              name="dbcp_myoracle"
+              username="hr2"
+              password="1234" />
+  	  	
+  	  </GlobalNamingResources>
+  
+  2. content.xml 설정 
+  	
+  	<Context>
+  		<<블락에서 설정>>	
+  	<ResourceLink global="dbcp_myoracle" name="dbcp_myoracle" 
+                  type="javax.sql.DataSource"/>
+  		 		
+  	</Context>
+  
+	
+	
+	
+	
+	 
