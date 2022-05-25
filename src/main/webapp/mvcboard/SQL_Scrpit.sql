@@ -30,3 +30,12 @@ values (seq_board_num.nextval, '대조영', '자료실 제목5 입니다', '내용5','1234');
 commit; 
 
 select * from mvcboard;
+
+-- DB에서 특정 레코드만 출력할 때 
+--(MVCBoardDAO.java 파일에서 검색 조건에 맞는 게시물 목록을 반환하는 코드)
+-- 서브쿼리문을 이용해서 기존 테이블에 필요한 값들을 추가해서 상황에 맞게 사용함
+
+select * from 
+(SELECT Tb.*, ROWNUM rNum FROM -- 아래 별칭화한 tb 테이블 + ROWNUM 코드를 활용한 넘버링 컬럼인 rNum  을 추가해줌.
+(select * from mvcboard  where title like '%제목%' ORDER BY idx DESC) Tb) -- 이 부분에서 셀렉트 절을 tb로 별칭화함. 
+WHERE rNum BETWEEN 1 AND 10 -- 넘버링한 rNum 정보를 토대로 start와 end 값과 동일한 컬럼수를 불러옴

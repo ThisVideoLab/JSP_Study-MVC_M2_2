@@ -1,75 +1,83 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="EUC-KR"%>
+    pageEncoding="UTF-8"%>
     
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="EUC-KR">
-<title>List.jsp(ÆÄÀÏ Ã·¼ö °Ô½ÃÆÇ: MVC)</title>
+<meta charset = "UTF-8">
+<title>íŒŒì¼ ì²¨ë¶€í˜• ê²Œì‹œíŒ</title>
+<style>a{text-decoration:none;}</style>
 </head>
 <body>
-	<H2> ÆÄÀÏ Ã·ºÎÇü °Ô½ÃÆÇ ¸ñ·Ï º¸±â (List)</H2>
-	<!-- °Ë»ö Æû -->
-	<form method = "get"></form>
+    <h2>íŒŒì¼ ì²¨ë¶€í˜• ê²Œì‹œíŒ - ëª©ë¡ ë³´ê¸°(List)</h2>
+    
+	<!-- ê²€ìƒ‰ í¼ -->
+	<form method = "get">
 	<table border = "1" width = "90%">
 		<tr>
 			<td align = "center">
-				<select name = "searchField">
-					<option value = "title"> Á¦¸ñ </option>
-					<option value = "content"> ³»¿ë </option>
+				<select name = "searchField"> <!-- ì—¬ê¸°ì„œ searchFieldì˜ ê°’ì´ ê²°ì •ë¨.  -->
+					<option value = "title"> ì œëª© </option> <!-- ì„ íƒ1: searchField = title ì»¬ëŸ¼ê°’ -->
+					<option value = "content"> ë‚´ìš© </option> <!-- ì„ íƒ2: searchField = content ì»¬ëŸ¼ê°’ -->
+															<!-- ì´ë¶€ë¶„ ì‘ìš©í•´ì„œ ì´ë¦„ / ì œëª©+ë‚´ìš© ê°’ ì„¤ì •ë„ ê°€ëŠ¥í•¨ -->
 				</select>
-				<input type = "text" name = "searchWorld" />
-				<input type = "submit" name = "°Ë»öÇÏ±â" />
+				<input type = "text" name = "searchWord" /> <!-- ì…ë ¥ë°›ì€ ê²€ìƒ‰ì–´. ì—¬ê¸°ì„œ searchWordì˜ ê°’ì´ ê²°ì •ë¨ -->
+				<input type = "submit" name = "ê²€ìƒ‰í•˜ê¸°" /> 
+				<!--submitì„ ëˆ„ë¥´ë©´ HttpServletRequest í˜•ì‹ì˜ req í¼ê°’ì´ ë°œìƒí•¨. ì´ë¥¼ listControllerì— ì „ë‹¬í•¨
+				    ì´ req ê°’ì„ ì–´ë””ì„œ ë°›ëŠ”ì§€ listControllerë¥¼ ì‚´í´ë³´ë©´ ë‹¤ìŒ íë¦„ì„ ì•Œ ìˆ˜ ìˆìŒ. -->
 			</td>
 		</tr>
 	</table>
+	</form>
 	
-	<!-- ¸ñ·Ï Å×ÀÌºí -->
+	<!-- ëª©ë¡ í…Œì´ë¸” -->
 	<table border = "1" width = "90%">
 		<tr>
-			<td width = "10%"> ¹øÈ£ </td>
-			<td width = "*"> Á¦¸ñ </td>
-			<td width = "15%"> ÀÛ¼ºÀÚ </td>
-			<td width = "10%"> Á¶È¸¼ö </td>
-			<td width = "15%"> ÀÛ¼ºÀÏ </td>
-			<td width = "8%"> Ã·ºÎ </td>
+			<th width = "10%"> ë²ˆí˜¸ </th>
+			<th width = "*"> ì œëª© </th>
+			<th width = "15%"> ì‘ì„±ì </th>
+			<th width = "10%"> ì¡°íšŒìˆ˜ </th>
+			<th width = "15%"> ì‘ì„±ì¼ </th>
+			<th width = "8%"> ì²¨ë¶€ </th>
 		</tr>
-		<c:choose>
-			<c:when test = "${empty boardLists }"> <!-- °Ô½Ã¹°ÀÌ ¾øÀ» ¶§ -->
+	<c:choose>
+		<c:when test = "${empty boardLists }"> <!-- ê²Œì‹œë¬¼ì´ ì—†ì„ ë•Œ -->
 			<tr>
 				<td colspan = "6" align = "center">
-					µî·ÏµÈ °Ô½Ã¹°ÀÌ ¾ø½À´Ï´Ù.
+					ë“±ë¡ëœ ê²Œì‹œë¬¼ì´ ì—†ìŠµë‹ˆë‹¤.
 				</td>
-			</c:when>
+			<tr>
+		</c:when>
 		
-		<c:otherwise> <!-- °Ô½Ã¹°ÀÌ Á¸ÀçÇÒ ¶§ -->
+		<c:otherwise> <!-- ê²Œì‹œë¬¼ì´ ì¡´ì¬í•  ë•Œ -->
 			<c:forEach items = "${boardLists }" var = "row" varStatus = "loop">
-				<tr align = center>
-					<!-- ¹øÈ£ -->
+				<tr align = "center">
+					<!-- ë²ˆí˜¸ -->
 					<td>
-						${ map.totalCount - (((map.pageNum-1) * map.pageSize) + loop.index) }
+						${map.totalCount - ((map.pageNum-1) * map.pageSize + loop.index)}
 					</td>
-					 <!-- Á¦¸ñ(¸µÅ©) -->
+					 <!-- ì œëª©(ë§í¬) -->
 					<td align = "left">
-						<a href = "../mvcboard/view.do?idx=${row.idx}" > ${row.title}</a>
+						<a href = "../mvcboard/view.do?idx=${row.idx}">${row.title}</a>
 					</td>	
-					<!-- ÀÛ¼ºÀÚ -->
+					<!-- ì‘ì„±ì -->
 					<td>
-						${row.name }
+						${row.name}
 					</td>	
-					<!-- Á¶È¸¼ö -->
+					<!-- ì¡°íšŒìˆ˜ -->
 					<td>
-						${row.visitcount }
+						${row.visitcount}
 					</td>
-					<!-- ÀÛ¼ºÀÏ -->
+					<!-- ì‘ì„±ì¼ -->
 					<td>
-						${row.postdate }
+						${row.postdate}
 					</td>
-					<!-- Ã·ºÎÆÄÀÏ -->
+					<!-- ì²¨ë¶€íŒŒì¼ -->
 					<td>
 						<c:if test="${not empty row.ofile }">
-							<a href = "../mvcboard>download.do?ofile=${row.ofile }&sfile=${row.sfile }&idx=${row.idx }">[down]</a>
+							<a href = "../mvcboard>download.do?ofile=${row.ofile }&sfile=${row.sfile }&idx=${row.idx }">[Down]</a>
 						</c:if>
 					</td>
 			</c:forEach>	
@@ -77,5 +85,15 @@
 	</c:choose>
 	</table>
 	
+	 <!-- í•˜ë‹¨ ë©”ë‰´(ë°”ë¡œê°€ê¸°, ê¸€ì“°ê¸°) -->
+    <table border="1" width="90%">
+        <tr align="center">
+            <td>
+                ${ map.pagingImg }
+            </td>
+            <td width="100"><button type="button"
+                onclick="location.href='../mvcboard/write.do';">ê¸€ì“°ê¸°</button></td>
+        </tr>
+    </table>
 </body>
 </html>

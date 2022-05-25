@@ -62,12 +62,12 @@
   
   <!-- 서블릿 Controller 매핑 설정  -->
   <servlet>
-  	<servlet-name>myController</servlet-name>
-  	<servlet-class>com.controller.Mycontroller</servlet-class>
+  	<servlet-name>myController</servlet-name> <!--  3 -->
+  	<servlet-class>com.controller.Mycontroller</servlet-class> <!--  4. 컨트롤러 호출 -->
   </servlet>
   <servlet-mapping>
-  	<servlet-name>myController</servlet-name>
-  	<url-pattern>/mvc_test/my.do</url-pattern>
+  	<servlet-name>myController</servlet-name>	<!--  2 -->
+  	<url-pattern>/mvc_test/my.do</url-pattern> <!--  1. 요청 시작 -->
   </servlet-mapping>
   
   <!-- MVCBoard 글목록 보기 Controller 매핑  -->
@@ -84,11 +84,11 @@
   <!--  아래에 들어가는 이름들은 반드시 대문자로 입력할 것 -->
   <context-param>
   	<param-name>POSTS_PER_PAGE</param-name> <!-- 변수명 -->
-  	<param-value>10</param-value> <!-- 변수에 들어갈 값 -->
+  	<param-value>2</param-value> <!-- 변수에 들어갈 값 -->
   </context-param>
   
   <context-param>
   	<param-name>PAGES_PER_BLOCK</param-name> <!-- 변수명 -->
-  	<param-value>5</param-value> <!-- 변수에 들어갈 값 -->
+  	<param-value>2</param-value> <!-- 변수에 들어갈 값 -->
   </context-param>
 </web-app>
