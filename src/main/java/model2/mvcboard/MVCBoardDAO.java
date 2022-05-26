@@ -83,7 +83,56 @@ public class MVCBoardDAO extends DBConnPool {
 		return board; // resultSet을 양껏 눌러담은 board라는 이름의 list를 반환함. 
 	}
 	
-	// 목록 검색 (Select)
+	// 목록 상세 검색 (Select): 주어진 일련 번호에 해당하는 값을 DTO에 담아 반환함(한페이지 read)
+	// viewController 요청을 처리함
+	
+	public MVCBoardDTO selectView (String idx) { // 레코드 하나만을 값으로 받음
+		MVCBoardDTO dto = new MVCBoardDTO();
+		String query = "select * from mvcboard where idx =?"; 
+		
+		try {
+			psmt = con.prepareStatement(query);
+			psmt.setString(1,idx);
+			rs = psmt.executeQuery();
+			
+			if(rs.next()) { // rs 값, 즉 레코드셋인 다음 행이 존재한다면
+				dto.setIdx(rs.getString(1));
+				dto.setName(rs.getString(2));
+				dto.setTitle(rs.getString(3));
+				dto.setContent(rs.getString(4));
+				dto.setPostdate(rs.getDate(5));
+				dto.setOfile(rs.getString(6));
+				dto.setSfile(rs.getString(7));
+				dto.setDowncount(rs.getInt(8));
+				dto.setPass(rs.getString(9));
+				dto.setVisitcount(rs.getInt(10));
+			}
+			
+		}catch(Exception e) {
+			System.out.println("게시물 상세정보 출력 중 예외 발생");
+			e.printStackTrace();
+		}
+		
+		return dto;
+	}
+	// 조회수 카운터: 주어진 일련번호 idx에 해당하는 게시물의 조회수를 1 증가시킴
+	public void updateVisitCount(String idx) {
+		String query = "update mvcboard set "
+				     + "visitcount = visitcount +1 "
+				     + "where idx = ?";
+		try {
+			psmt = con.prepareStatement(query);
+			psmt.setString(1,idx);
+			psmt.executeUpdate();
+			
+		}catch(Exception e) {
+			System.out.println("게시물 조회수 증가 중 예외 발생");
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
 	
 	// 데이터 삽입 (Insert)
 	public int insertWrite (MVCBoardDTO dto) {
@@ -112,8 +161,95 @@ public class MVCBoardDAO extends DBConnPool {
 	}
 	
 	// 데이터 수정 (Update)
+	public int udatePost (MVCBoardDTO dto) {
+		int result = 0;
+		
+		try {
+			String query = "update mvcboard "
+						 + "set title = ?, name =?,dto content = ?,content ofile =?, sfile =? "
+						 + "where idx = and pass = ?";
+			//쿼리문 준비 
+			psmt = con.prepareStatement(query); 
+			
+			psmt.setString(1, dto.getTitle());
+			psmt.setString(2, dto.getName());
+			psmt.setString(3, dto.getContent());
+			psmt.setString(4, dto.getOfile());
+			psmt.setString(5, dto.getSfile());
+			psmt.setString(6, dto.getIdx());
+			psmt.setString(7, dto.getPass()); 
+			
+			result = psmt.executeUpdate();   //update성공시 result 변수의 값이 > 0 		
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("update 중 예외 발생");
+		}
+		return result;
+	}
 	
 	// 데이터 삭제 (Delete)
+	public int deletePost(String idx) {
+		int result = 0 ; 
+		
+		try {
+			String query = "DELETE mvcboard WHERE idx = ?"; 
+			psmt = con.prepareStatement(query); 
+			psmt.setString(1, idx);
+			
+			result = psmt.executeUpdate();  //result > 0 삭제 성공, result = 0 : 삭제 실패 
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("delete 시 예외 발생 ");
+		}
+				
+		return result; 				
+	}
 	
-	// 데이터 검색 (select를 통한 조건 검색을 활용)
+	// 다운로드 횟수를 증가시키는 매서드
+	public void downCountPlus (String idx) {
+		String query = "update mvcboard set downcount = downcount + 1 "
+					 + "where idx = ?";
+		
+		try {
+			psmt = con.prepareStatement(query); 
+			psmt.setString(1, idx);
+			psmt.executeUpdate();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("다운로드 횟수 증가 중 예외 발생");
+		}
+		
+		
+	}
+	
+	// 비밀번호를 확인하는 메서드 : 입력한 비밀번호가 DataBase의 값과 일치하는지 확인
+	public boolean confirmPassword(String pass, String idx) {
+		boolean isCorr = true;
+		
+		try {
+				//count(*): 레코드가 존재한다면, 즉 idx와 pass의 일치 여부를 대조해볼 data가 존재한다면
+			String query = "select count(*) from mvcboard "
+						 + "where pass = ? and idx = ?;";
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, pass);
+			psmt.setString(2, idx);
+			rs = psmt.executeQuery();
+			
+			rs.next(); // 셀렉트 한 rs셋이 있는 상태에서 rs.next()을 입력하면 가장 처음 rs셋의 1번 컬럼으로 이동함 
+			if (rs.getInt(1) == 0 ) { // 그 다음에 rs의 첫 컬럼(getInt(1))값이 0이라면, 즉 값이 없다면
+				isCorr = false;
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("비밀번호 일치여부 확인 시 예외 발생");
+		}
+		
+		return isCorr;
+	}
+	
+// 문서의 끝
 }

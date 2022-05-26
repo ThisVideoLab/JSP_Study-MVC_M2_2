@@ -1,6 +1,8 @@
 package utils;
 
 public class BoardPage {
+	
+	// pagingStr 메서드의 각 값은 ListController.java 에서 직접 넣어준 변수값들을 사용함.
     public static String pagingStr(int totalCount, int pageSize, int blockPage,
             int pageNum, String reqUrl) {
         String pagingStr = "";

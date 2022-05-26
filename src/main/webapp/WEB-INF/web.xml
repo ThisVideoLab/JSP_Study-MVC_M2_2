@@ -56,9 +56,19 @@
   	<url-pattern>/*</url-pattern>
   </filter-mapping>
   
-  <!-- 서블릿 (servlet) : *.java  ==> html 로 출력 하는 자바를 서블릿 
-  		   : 요즘은 서블릿을 controller  
-  서블릿(Controller) 매핑 설정 :  -->
+  <!-- 서블릿 (servlet) : 서블릿이란 자바를 사용하여 웹을 만들기 위해 필요한 기술. 클라이언트가 어떠한 요청을 하면 그에 대한 결과를 다시
+  					    전송해주어야 하는데, 이러한 역할을 하는 자바 프로그램. 본인의 경우는 이를 배달의민족의 개념으로 치환해 이해하고자 함.
+  					    예컨데 /mvcboard/list.do 이라는 코드로 클라이언트(혹은 앱, 프로그램)의 요청을 배민 주문이라고 가정해보자.
+  					    가령 김기(cient)가 "야 박군 짜장면 함 조지자"라고 이야기 했다면, 이러한 식사 의사는 HTTP REQUEST에 해당한다.
+  					    그러면 본인(servlet)은 밥시키라는 김기의 퀘스트(httpServeltRequest)생성에 부지런히 움직이기 시작한다.
+  					     박군 짜장면이라는 표현(url-pattern)을 가지고 내 기억(servlet-mapping)에서 이 메뉴에 해당하는
+  					    업체인(servlet-name) 박군짬뽕을 떠올린다. 그 후 배민 앱(servlet-container)를 켜서 업체명 중에서 박군 짭뽕을
+  					    찾는다. 찾게 되면 박군짬뽕의 메뉴화면(servlet-class)으로 진입한다. 메뉴를 보고 이것저것  주문 바구니에 넣고
+  					    야무지게 요청사항도 입력을 하는 행위는, servlet 모델의 service()에 해당하게 된다. 탕수육을 세트 메뉴로 시키면
+  					    양이 작고, 별도로 시키면 가격이 비싼 이 딜레마를 극복하고 나서 결국 결제(doPost() / doGet())에 성공한다.
+  					    얼마 후 알람이 울리고 매장에서 주문을 수락(httpServeltResponse)하면 이 사실을 김기에게 보고(HTTP RESPONSE)하면
+  					    주문 셔틀인 본인이라는 서블릿의 작동은 종료가 된다.   
+   -->
   
   <!-- 서블릿 Controller 매핑 설정  -->
   <servlet>
@@ -70,7 +80,7 @@
   	<url-pattern>/mvc_test/my.do</url-pattern> <!--  1. 요청 시작 -->
   </servlet-mapping>
   
-  <!-- MVCBoard 글목록 보기 Controller 매핑  -->
+  <!-- MVCBoard 글 목록 보기 Controller 매핑  -->
   <servlet>
   	<servlet-name>MVCBoardList</servlet-name>
   	<servlet-class>model2.mvcboard.ListController</servlet-class>
@@ -79,16 +89,36 @@
   	<servlet-name>MVCBoardList</servlet-name>
   	<url-pattern>/mvcboard/list.do</url-pattern>
   </servlet-mapping>
+  
+  <!-- MVCBoard 글 내용 보기 Controller 매핑  -->
+  <servlet>
+  	<servlet-name>MVCBoardView</servlet-name>
+  	<servlet-class>model2.mvcboard.ViewController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>MVCBoardView</servlet-name>
+  	<url-pattern>/mvcboard/view.do</url-pattern>
+  </servlet-mapping>
+  
+  <!-- MVCBoard 글 수정/삭제  Controller 매핑  -->
+  <servlet>
+  	<servlet-name>MVCBoardPass</servlet-name>
+  	<servlet-class>model2.mvcboard.PassController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>MVCBoardPass</servlet-name>
+  	<url-pattern>/mvcboard/pass.do</url-pattern>
+  </servlet-mapping>
     
   <!-- 페이징 처리를 위한 설정 (변수값 할당) 출력레코드수:10개, 페이지수 : 5 -->
   <!--  아래에 들어가는 이름들은 반드시 대문자로 입력할 것 -->
   <context-param>
   	<param-name>POSTS_PER_PAGE</param-name> <!-- 변수명 -->
-  	<param-value>2</param-value> <!-- 변수에 들어갈 값 -->
+  	<param-value>10</param-value> <!-- 변수에 들어갈 값 -->
   </context-param>
   
   <context-param>
   	<param-name>PAGES_PER_BLOCK</param-name> <!-- 변수명 -->
-  	<param-value>2</param-value> <!-- 변수에 들어갈 값 -->
+  	<param-value>5</param-value> <!-- 변수에 들어갈 값 -->
   </context-param>
 </web-app>

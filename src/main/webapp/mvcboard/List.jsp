@@ -36,14 +36,15 @@
 	<table border = "1" width = "90%">
 		<tr>
 			<th width = "10%"> 번호 </th>
-			<th width = "*"> 제목 </th>
+			<th width = "*"> 제목 </th>  <!-- 여기서 *는 나머지 모든 부분을 의미함 -->
 			<th width = "15%"> 작성자 </th>
 			<th width = "10%"> 조회수 </th>
 			<th width = "15%"> 작성일 </th>
 			<th width = "8%"> 첨부 </th>
 		</tr>
 	<c:choose>
-		<c:when test = "${empty boardLists }"> <!-- 게시물이 없을 때 -->
+		<c:when test = "${empty boardLists }"> 
+		<!-- 게시물이 없을 때, 즉 DTO가 비었을 때, 즉 게시판 테이블 내 rs가 없을 때  -->
 			<tr>
 				<td colspan = "6" align = "center">
 					등록된 게시물이 없습니다.
@@ -86,10 +87,11 @@
 	</table>
 	
 	 <!-- 하단 메뉴(바로가기, 글쓰기) -->
+	 <!-- 사실 잘 보면 이 부분이 같은 테이블로 구성된게 아니라 바짝 붙어서 하나의 테이블처럼 보이는 것임 -->
     <table border="1" width="90%">
         <tr align="center">
             <td>
-                ${ map.pagingImg }
+                ${ map.pagingImg } <!--  이 부분을 중앙 정렬하려면 파츠를 3개로 쪼개야 함. -->
             </td>
             <td width="100"><button type="button"
                 onclick="location.href='../mvcboard/write.do';">글쓰기</button></td>
